@@ -1,13 +1,15 @@
 var express = require('express');
-import { createUser, getAllUsers, getUserByUsername } from './jwt-auth';
+import { getUserById, selectAllUsers } from '../config/db';
+import authenticateToken from '../middlewares/authenticateToken';
+import { createUser, getUserByUsername } from './jwt-auth';
 const jwt = require('jsonwebtoken');
 var router = express.Router();
 
 const signup = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { name, username, password } = req.body;
 
+  if (!name) return res.status(400).json({ error: 'Missing name' });
   if (!username) return res.status(400).json({ error: 'Missing username' });
-
   if (!password) return res.status(400).json({ error: 'Missing password' });
 
   try {
@@ -17,9 +19,9 @@ const signup = async (req, res, next) => {
       return res.status(400).json({ error: 'Username is already taken' });
     }
 
-    const user = await createUser(username, password);
+    const user = await createUser(name, username, password);
 
-    const payload = { userId: user.id };
+    const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
@@ -30,8 +32,31 @@ const signup = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const result = await selectAllUsers();
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getSingleUser = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const user = await getUserById(userId);
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get('/me', authenticateToken, getSingleUser);
+
 // Return all users
-router.get('/', getAllUsers);
+router.get('/', authenticateToken, getAllUsers);
 
 // Create a user
 router.post('/create', signup);

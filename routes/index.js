@@ -1,5 +1,5 @@
 var express = require('express');
-const pool = require('../config/db');
+const { pool } = require('../config/db');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {

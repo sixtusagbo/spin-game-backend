@@ -24,8 +24,8 @@ const createUsersTable = () => {
         username VARCHAR(20) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL,
         spins SMALLINT DEFAULT 0,
-        spinResult BOOLEAN DEFAULT false,
-        maxSpins SMALLINT DEFAULT ${process.env.MAX_SPINS},
+        spin_result BOOLEAN DEFAULT false,
+        max_spins SMALLINT DEFAULT ${process.env.MAX_SPINS},
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `;
@@ -36,16 +36,16 @@ const createUsersTable = () => {
     .catch((err) => console.error('Failed to create users table', err));
 };
 
-const updateSpinStatus = async (userId, result) => {
+const updateSpinStatus = async (userId, spinSuccess) => {
   const query = `
     UPDATE users 
     SET spins = spins + 1, 
-        spinResult = $2 
+        spin_result = $2 
     WHERE id = $1 
     RETURNING *
   `;
 
-  const values = [userId, result];
+  const values = [userId, spinSuccess];
 
   const result = await pool.query(query, values);
 
@@ -55,7 +55,7 @@ const updateSpinStatus = async (userId, result) => {
 const updateMaxSpins = async (userId, value) => {
   const query = `
     UPDATE users 
-    SET maxSpins = $2
+    SET max_spins = $2
     WHERE id = $1 
     RETURNING *
   `;
@@ -67,6 +67,22 @@ const updateMaxSpins = async (userId, value) => {
   return result.rows[0];
 };
 
-dropUsersTable();
+const selectAllUsers = async () => {
+  const result = await pool.query('SELECT * FROM users');
 
-module.exports = pool;
+  return result.rows;
+};
+
+const getUserById = async (id) => {
+  const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+
+  return result.rows[0];
+};
+
+module.exports = {
+  pool,
+  selectAllUsers,
+  updateMaxSpins,
+  updateSpinStatus,
+  getUserById,
+};

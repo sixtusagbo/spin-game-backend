@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const express = require('express');
-const pool = require('../config/db');
+const { pool } = require('../config/db');
 const router = express.Router();
 
 const getUserByUsername = async (username) => {
@@ -12,25 +12,15 @@ const getUserByUsername = async (username) => {
   return result.rows[0];
 };
 
-const createUser = async (username, password) => {
-  console.log(password);
+const createUser = async (name, username, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const result = await pool.query(
-    'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-    [username, hashedPassword]
+    'INSERT INTO users (name, username, password) VALUES ($1, $2, $3) RETURNING *',
+    [name, username, hashedPassword]
   );
 
   return result.rows[0];
-};
-
-const getAllUsers = async (req, res, next) => {
-  try {
-    const result = await pool.query('SELECT * FROM users');
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
 };
 
 const authenticate = async (req, res, next) => {
@@ -53,7 +43,7 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    const payload = { userId: user.id };
+    const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
@@ -70,5 +60,4 @@ module.exports = {
   jwtAuthRouter: router,
   createUser,
   getUserByUsername,
-  getAllUsers,
 };
