@@ -26,7 +26,9 @@ const signup = async (req, res, next) => {
       expiresIn: '1h',
     });
 
-    res.status(201).json({ token, id: payload.id, spins: user.spins });
+    res
+      .status(201)
+      .json({ token, id: payload.id, spins: user.max_spins - user.spins });
   } catch (error) {
     next(error);
   }
