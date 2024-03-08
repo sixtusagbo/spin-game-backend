@@ -48,7 +48,7 @@ const authenticate = async (req, res, next) => {
       expiresIn: '1h',
     });
 
-    res.json({ token });
+    res.json({ token, id: payload.id });
   } catch (error) {
     next(error);
   }

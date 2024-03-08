@@ -26,7 +26,7 @@ const signup = async (req, res, next) => {
       expiresIn: '1h',
     });
 
-    res.status(201).json({ token });
+    res.status(201).json({ token, id: payload.id });
   } catch (error) {
     next(error);
   }
