@@ -1,5 +1,5 @@
 var express = require('express');
-import { createUser, getUserByUsername } from './jwt-auth';
+import { createUser, getAllUsers, getUserByUsername } from './jwt-auth';
 const jwt = require('jsonwebtoken');
 var router = express.Router();
 
@@ -30,11 +30,10 @@ const signup = async (req, res, next) => {
   }
 };
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
-});
+// Return all users
+router.get('/', getAllUsers);
 
+// Create a user
 router.post('/create', signup);
 
 module.exports = router;

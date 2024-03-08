@@ -24,6 +24,15 @@ const createUser = async (username, password) => {
   return result.rows[0];
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const authenticate = async (req, res, next) => {
   const { username, password } = req.body;
 
@@ -57,4 +66,9 @@ const authenticate = async (req, res, next) => {
 
 router.post('/login', authenticate);
 
-module.exports = { jwtAuthRouter: router, createUser, getUserByUsername };
+module.exports = {
+  jwtAuthRouter: router,
+  createUser,
+  getUserByUsername,
+  getAllUsers,
+};
