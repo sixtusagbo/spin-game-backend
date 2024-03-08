@@ -79,6 +79,9 @@ const getUserById = async (id) => {
   return result.rows[0];
 };
 
+// dropUsersTable();
+createUsersTable();
+
 module.exports = {
   pool,
   selectAllUsers,
