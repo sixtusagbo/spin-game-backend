@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/status', function (req, res, next) {
-  res.json({ active: true });
+  res.json({ active: true, envLoaded: process.env.ENV_LOADAD });
 });
 
 router.get('/db-status', async function (req, res, next) {

@@ -80,7 +80,7 @@ const getUserById = async (id) => {
 };
 
 // dropUsersTable();
-createUsersTable();
+// createUsersTable();
 
 module.exports = {
   pool,
