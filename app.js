@@ -8,7 +8,7 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const jwtAuthRouter = require('./routes/jwt-auth');
+const { jwtAuthRouter } = require('./routes/jwt-auth');
 
 var app = express();
 
@@ -40,6 +40,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
+  console.error(err);
   res.json({ error: err.toString() });
 });
 

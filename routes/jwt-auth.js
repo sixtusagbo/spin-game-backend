@@ -12,8 +12,24 @@ const getUserByUsername = async (username) => {
   return result.rows[0];
 };
 
+const createUser = async (username, password) => {
+  console.log(password);
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await pool.query(
+    'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+    [username, hashedPassword]
+  );
+
+  return result.rows[0];
+};
+
 const authenticate = async (req, res, next) => {
   const { username, password } = req.body;
+
+  if (!username) return res.status(400).json({ error: 'Missing username' });
+
+  if (!password) return res.status(400).json({ error: 'Missing password' });
 
   try {
     const user = await getUserByUsername(username);
@@ -41,4 +57,4 @@ const authenticate = async (req, res, next) => {
 
 router.post('/login', authenticate);
 
-module.exports = router;
+module.exports = { jwtAuthRouter: router, createUser, getUserByUsername };

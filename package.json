@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "start": "node dist/bin/www",
+    "build": "babel src -d dist",
+    "dev": "nodemon --exec babel-node ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -20,5 +21,11 @@
     "node-pg-migrate": "^6.2.2",
     "nodemon": "^3.1.0",
     "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.24.0",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.24.0"
   }
 }
