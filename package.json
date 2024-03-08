@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node dist/bin/www",
-    "build": "babel src -d dist",
+    "build": "babel app.js bin config middlewares public routes views -d dist",
     "dev": "nodemon --exec babel-node ./bin/www"
   },
   "dependencies": {
